@@ -6,6 +6,7 @@ import PawsLogo from "@/icons/PawsLogo";
 import Star from "@/icons/Star";
 import Wallet from "@/icons/Wallet";
 import { sparkles } from "@/images";
+import Image from "next/image";
 
 const HomeTab = () => {
     return (
@@ -27,12 +28,12 @@ const HomeTab = () => {
             </div>
             <div className="flex items-center gap-1 text-[#868686] rounded-full px-4 py-1.5 mt-2 cursor-pointer">
                 <span>NEWCOMER</span>
-                {/* <Image 
+                <Image 
                     src={sparkles}
                     alt="sparkles"
                     width={18}
                     height={19}
-                /> */}
+                />
                 <span>RANK</span>
                 <ArrowRight className="w-6 h-6"/>
             </div>
@@ -49,7 +50,7 @@ const HomeTab = () => {
                 <ArrowRight className="w-6 h-6 text-gray-400"/>
             </button>
 
-            <button className="shine-effect w-full bg-[#ffffff0d] border-[1px]
+            <button className="w-full bg-[#ffffff0d] border-[1px]
                                border-[#2d2d2e] rounded-lg px-4 py-2 flex items-center justify-between">
                 <div className="flex items-center gap-3 font-medium">
                     <Star className="w-8 h-8"/>
