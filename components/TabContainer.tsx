@@ -5,6 +5,7 @@ import HomeTab from "./HomeTab";
 import LeaderboardTab from "./LeaderboardTab";
 import FriendsTab from "./FriendsTab";
 import TasksTab from "./TasksTab";
+import { CourcesTab } from "./CourcesTab";
 
 const TabContainer = () => {
     const { activeTab } = useTab()
@@ -20,7 +21,7 @@ const TabContainer = () => {
                 <FriendsTab/>
             </div>
             <div className={`${activeTab === 'earn' ? 'is-show' : 'is-hide'}`}>
-                <TasksTab/>
+                <CourcesTab/>
             </div>
         </div>
     )
