@@ -1,6 +1,6 @@
 'use client'
 
-import PawsLogo from "@/icons/PawsLogo";
+import PawsLogo from "@/icons/CourceHiveLogo";
 import Image from "next/image";
 import { trophy } from "@/images";
 
