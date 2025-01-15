@@ -1,0 +1,65 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  password      String
+  name          String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  purchases     Purchase[]
+}
+
+model Course {
+  id              String    @id @default(cuid())
+  title           String
+  slug            String    @unique
+  description     String
+  price           Int
+  thumbnailUrl    String?
+  telegramLink    String    // Telegram group link
+  categoryId      String
+  category        Category  @relation(fields: [categoryId], references: [id])
+  purchases       Purchase[]
+
+  @@index([categoryId])
+}
+
+model Category {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String    @unique
+  courses     Course[]
+}
+
+model Purchase {
+  id            String    @id @default(cuid())
+  userId        String
+  courseId      String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course        Course    @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  paymentId     String    @unique    // Reference to payment gateway transaction
+  amount        Int
+  status        PaymentStatus @default(PENDING)
+  purchasedAt   DateTime  @default(now())
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+  @@index([status])
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
