@@ -6,8 +6,12 @@ import LeaderboardTab from "./LeaderboardTab";
 import FriendsTab from "./FriendsTab";
 import TasksTab from "./TasksTab";
 import { CourcesTab } from "./CourcesTab";
+import CourceDetailsPage from "./CourceDetailsPage";
+import CheckFootprint from "./CheckFootprint";
+import { useRouter } from "next/navigation";
 
 const TabContainer = () => {
+    const router = useRouter();
     const { activeTab } = useTab()
     return (
         <div className="flex-1 overflow-hidden max-w-md mx-auto pt-[20px] pb-[72px]">
@@ -18,7 +22,7 @@ const TabContainer = () => {
                 <LeaderboardTab/>
             </div>
             <div className={`${activeTab === 'friends' ? 'is-show' : 'is-hide'}`}>
-                <FriendsTab/>
+                
             </div>
             <div className={`${activeTab === 'earn' ? 'is-show' : 'is-hide'}`}>
                 <CourcesTab/>
