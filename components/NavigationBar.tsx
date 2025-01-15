@@ -1,26 +1,23 @@
 'use client'
 
 import Home from "@/icons/Home";
-import Earn from "@/icons/Earn";
 import Friends from "@/icons/Friends";
-import Leaderboard from "@/icons/Leaderboard";
 import { TabType } from "@/utils/types";
 import { useTab } from "@/contexts/TabContext";
+import Cources from "@/icons/Cources";
 
 const NavigationBar = () => {
-    const {activeTab,setActiveTab} = useTab()
-
+    const {activeTab,setActiveTab} = useTab();
     const tabs: {id:TabType; label:string; Icon: React.FC<{className?: string}>}[] = [
         {id: 'home', label: 'home', Icon: Home},
-        {id: 'leaderboard', label: 'leaderboard', Icon: Leaderboard},
-        {id: 'friends', label: 'friends', Icon: Friends},
-        {id: 'earn', label: 'earn', Icon: Earn},
+        {id: 'cources', label: 'cources', Icon: Cources},
+        {id: 'profile', label: 'profile', Icon: Friends},
     ]
 
     return (
         <div className="flex justify-center w-full">
             <div className="fixed bottom-0 bg-black border-t border-gray-800 w-full max-w-md">
-                <div className="flex justify-between px-4 py-2">
+                <div className="flex justify-between items-center px-4 py-2">
                     {tabs.map((tab) => {
                         const isActive = activeTab === tab.id 
                         return(
