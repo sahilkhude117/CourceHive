@@ -81,7 +81,9 @@ const HomeTab = () => {
             </div>
         </div>
     
-        <CourceList rowTitle="Top Coding Cources" cources={CodingCources} type="top_10"/>
+        <CourceList rowTitle="Top Cources" cources={CodingCources} type="top_10"/>
+        <CourceList rowTitle="Apna College Cources" cources={WarikooCources}/>
+        <CourceList rowTitle="Harkirat Singh Cources" cources={WarikooCources}/>
         <CourceList rowTitle="Ankur Warikoo Cources" cources={WarikooCources}/>
 
         </div>
