@@ -56,7 +56,7 @@ const CourseCard = ({
             </div>
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center">
-            <span className="text-lg font-bold">{price} rs</span>
+            <span className="text-lg font-bold">₹{price}</span>
             <button className="bg-[#4c9ce2] text-black px-4 py-2 rounded-lg text-sm font-bold">
              Enroll Now
             </button>
