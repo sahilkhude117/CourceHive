@@ -24,7 +24,7 @@ model Course {
   slug            String    @unique
   description     String
   price           Int
-  thumbnailUrl    String?
+  thumbnailUrl    String
   telegramLink    String    // Telegram group link
   categoryId      String
   category        Category  @relation(fields: [categoryId], references: [id])
