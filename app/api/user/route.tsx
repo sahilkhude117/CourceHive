@@ -83,11 +83,12 @@ export const PUT = async (req: Request) => {
 
 export const GET = async (req: Request) => {
   try {
-    const id = getUserId();
+    const searchParams = await useSearchParams();
+    const userId = await searchParams.get('userId');
 
     const user = await prisma.user.findUnique({
       where: {
-        id, 
+        id: userId ?? undefined,
       }
     });
 
@@ -112,9 +113,3 @@ export const GET = async (req: Request) => {
     );
   }
 };
-
-async function getUserId() {
-  const searchParams = await useSearchParams();
-  const userId = await searchParams.get('userId');
-  return userId;
-}
