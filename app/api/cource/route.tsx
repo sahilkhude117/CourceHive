@@ -1,16 +1,13 @@
 import prisma from '@/utils/db';
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 
-export const GET = async (req: Request) => {
+export const GET = async (req: NextRequest) => {
   try {
-    const body = await req.json();
-    const {
-        courseId
-    } = body;
+    const courseId = req.nextUrl.searchParams.get('courseId');
 
     const cource = await prisma.course.findUnique({
       where: {
-        id: courseId
+        id: courseId ?? undefined
       }
     });
 
