@@ -1,6 +1,6 @@
 import prisma from '@/utils/db';
 import { useSearchParams } from 'next/navigation';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const POST = async (req: Request) => {
   try {
@@ -81,10 +81,9 @@ export const PUT = async (req: Request) => {
   }
 };
 
-export const GET = async (req: Request) => {
+export const GET = async (req: NextRequest) => {
   try {
-    const searchParams = await useSearchParams();
-    const userId = await searchParams.get('userId');
+    const userId = req.nextUrl.searchParams.get('userId');
 
     const user = await prisma.user.findUnique({
       where: {
