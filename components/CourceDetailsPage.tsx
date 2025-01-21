@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { taskWhitePaws } from '@/images';
+import { useRouter } from 'next/navigation';
 
 const CourseDetailsPage = ({ 
   title, 
@@ -40,12 +40,14 @@ const CourseDetailsPage = ({
     }
   };
 
+  const router = useRouter();
+
   return (
     <div className="flex flex-col min-h-screen bg-black">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-black shadow-sm ">
         <div className="flex items-center p-4">
-          <Button variant="ghost" size="icon" className="mr-2">
+          <Button onClick={() => router.back()} variant="ghost" size="icon" className="mr-2">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-lg font-semibold flex-1 text-center">Course Details</h1>
@@ -58,7 +60,7 @@ const CourseDetailsPage = ({
       {/* Course Image */}
       <div className="relative rounded-lg overflow-hidden w-full h-60">
         <Image
-          src={taskWhitePaws}
+          src={thumbnail}
           alt={title}
           fill
           className="object-cover rounded-lg"
