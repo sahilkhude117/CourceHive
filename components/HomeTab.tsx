@@ -15,6 +15,8 @@ import { useEffect } from "react";
 import { useState } from "react";
 import axios from "axios";
 import { HomeSkeleton} from "./SkeletonCard";
+import { useRouter } from "next/navigation";
+import { useTab } from "@/contexts/TabContext";
 
 interface Cource {
     id: string;
@@ -51,6 +53,8 @@ const HomeTab = () => {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const { activeTab, setActiveTab } = useTab();
+    const router = useRouter();
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -87,6 +91,7 @@ const HomeTab = () => {
                                 alt="courceHive Logo"
                                 width={500}
                                 height={500}
+                                onClick={() => router.push('/course/sigma3')}
                                 className="rounded-lg"
                             />
                         </CarouselItem>
@@ -97,6 +102,7 @@ const HomeTab = () => {
                                 width={500}
                                 height={500}
                                 className="rounded-lg"
+                                onClick={() => router.push('/course/cohort3')}
                             />
                         </CarouselItem>
                         <CarouselItem>
@@ -106,6 +112,7 @@ const HomeTab = () => {
                                 width={500}
                                 height={500}
                                 className="rounded-lg"
+                                onClick={() => router.push('/course/communication')}
                             />
                         </CarouselItem>
                     </CarouselContent>
@@ -116,7 +123,7 @@ const HomeTab = () => {
             
             {/* <CourceHiveLogo size={2000} className="w-100 h-100 mb-4"/> */}
             
-            <div className="flex items-center gap-1 text-[#868686] rounded-full px-4 py-1.5 mt-2 cursor-pointer">
+            <div onClick={() => setActiveTab('cources')} className="flex items-center gap-1 text-[#868686] rounded-full px-4 py-1.5 mt-2 cursor-pointer">
                 <span>View All Cources</span>
                 <ArrowRight className="w-6 h-6"/>
             </div>
