@@ -3,20 +3,25 @@ import { NextResponse } from 'next/server';
 
 export const GET = async (req: Request) => {
   try {
-    const body = await req.json();
-    const {
-        categoryId
-    } = body;
-
-    const cources = await prisma.course.findMany({
-      where: {
-        categoryId: categoryId,
+    
+    const categories = await prisma.category.findMany({
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        courses: {
+          select: {
+            id: true,
+            thumbnailUrl: true,
+            slug: true,
+          }
+        }
       }
     });
 
     return NextResponse.json(
       {
-        cources
+        categories
       },
       {
         status: 200,
