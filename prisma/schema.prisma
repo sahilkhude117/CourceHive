@@ -23,8 +23,12 @@ model Course {
   title           String
   slug            String    @unique
   description     String
+  instructor      String    @default("Harkirat Singh")
+  duration        String    @default("6 months")
   price           Int
   thumbnailUrl    String
+  lessions        Int       @default(12)
+  videoUrl        String    @default("https://youtu.be/RKramRyUvHQ?si=5icD1e1RYOR5Q2tg")
   telegramLink    String    // Telegram group link
   categoryId      String
   category        Category  @relation(fields: [categoryId], references: [id])
