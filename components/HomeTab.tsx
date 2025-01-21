@@ -1,7 +1,6 @@
 'use client'
 
 import ArrowRight from "@/icons/ArrowRight";
-import { courcehiveLogo } from "@/images";
 import Image from "next/image";
 import Autoplay from "embla-carousel-autoplay"
 import {
@@ -12,24 +11,63 @@ import {
     CarouselPrevious,
   } from "@/components/ui/carousel"
 import CourceList from "./Cources";
+import { useEffect } from "react";
+import { useState } from "react";
+import axios from "axios";
+import { HomeSkeleton} from "./SkeletonCard";
 
-const CodingCources = [
-  { id: '1', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '2', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '3', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '4', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '5', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '5', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-]
+interface Cource {
+    id: string;
+    thumbnailUrl: string;
+    slug: string;
+}
 
-const WarikooCources = [
-  { id: '1', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '2', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '3', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
-  { id: '4', imageUrl: 'https://www.filmiforest.com/img/movies/524/pushpa-telugu-movie-photo-5.jpg' },
+interface Category {
+    id: string;
+    name: string;
+    slug: string;
+    courses: Cource[];
+}
+
+const topCources = [
+    {
+        id: "1",
+        thumbnailUrl: "/images/thumbnails/cohort/cohort3.png",
+        slug: "cohort3",
+    },
+    {
+        id: "2",
+        thumbnailUrl: "/images/thumbnails/apnacollege/sigma3.png",
+        slug: "sigma3",
+    },
+    {
+        id: "3",
+        thumbnailUrl: "/images/thumbnails/webveda/speak.png",
+        slug: "communication",
+    },
 ]
 
 const HomeTab = () => {
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get('/api/home');
+                setCategories(response.data.categories);
+            } catch (error) {
+                console.error('Error fetching categories:', error);
+                setError("failed to fetch categories"); 
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
     return (
         <div className={`home-tab-con transition-all duration-300`}>
 
@@ -45,26 +83,29 @@ const HomeTab = () => {
                     <CarouselContent>
                         <CarouselItem>
                             <Image
-                                src={courcehiveLogo}
+                                src="/images/thumbnails/apnacollege/sigma3.png"
                                 alt="courceHive Logo"
                                 width={500}
                                 height={500}
+                                className="rounded-lg"
                             />
                         </CarouselItem>
                         <CarouselItem>
                             <Image
-                                src={courcehiveLogo}
+                                src="/images/thumbnails/cohort/cohort3.png"
                                 alt="courceHive Logo"
                                 width={500}
                                 height={500}
+                                className="rounded-lg"
                             />
                         </CarouselItem>
                         <CarouselItem>
                             <Image
-                                src={courcehiveLogo}
+                                src="/images/thumbnails/webveda/speak.png"
                                 alt="courceHive Logo"
                                 width={500}
                                 height={500}
+                                className="rounded-lg"
                             />
                         </CarouselItem>
                     </CarouselContent>
@@ -80,12 +121,25 @@ const HomeTab = () => {
                 <ArrowRight className="w-6 h-6"/>
             </div>
         </div>
-    
-        <CourceList rowTitle="Top Cources" cources={CodingCources} type="top_10"/>
-        <CourceList rowTitle="Apna College Cources" cources={WarikooCources}/>
-        <CourceList rowTitle="Harkirat Singh Cources" cources={WarikooCources}/>
-        <CourceList rowTitle="Ankur Warikoo Cources" cources={WarikooCources}/>
 
+        {loading ? (
+            <HomeSkeleton />
+        ) : (
+            <div>
+                <CourceList 
+                    categoryName={`Top Cources`} 
+                    cources={topCources}
+                    type="top_10"
+                />
+                {categories.map((category) => (
+                    <CourceList 
+                        key={category.id}   
+                        categoryName={`${category.name} Cources`} 
+                        cources={category.courses}
+                    />
+                ))}
+            </div>
+        )}
         </div>
     )
 }
