@@ -3,32 +3,33 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { PlayCircle, Clock} from 'lucide-react';
 import Image from 'next/image';
-import { courcehiveLogo } from '@/images';
+import { useRouter } from 'next/navigation';
 
 const CourseCard = ({ 
   title, 
   instructor, 
   thumbnail, 
   duration, 
-  progress, 
+  slug,
   price, 
   category 
 }:{
     title : string, 
     instructor : string, 
     thumbnail : string, 
-    duration : string, 
-    progress : number, 
+    duration : string,  
+    slug : string,
     price : string, 
     category : string   
 }) => {
+    const router = useRouter();
   return (
     <div className='ml-12 mb-5 mr-12'>
         <Card className="w-full max-w-sm mx-auto">
         <CardHeader className="p-0">
             <div className="relative">
             <Image
-                src={courcehiveLogo}
+                src={thumbnail}
                 alt="courceHive Logo"
                 className='w-full h-48 object-cover rounded-t-lg'
                 width={500}
@@ -57,7 +58,9 @@ const CourseCard = ({
         </CardContent>
         <CardFooter className="p-4 pt-0 flex justify-between items-center">
             <span className="text-lg font-bold">₹{price}</span>
-            <button className="bg-[#4c9ce2] text-black px-4 py-2 rounded-lg text-sm font-bold">
+            <button onClick={() => {
+                router.push(`/course/${slug}`);
+            }} className="bg-[#4c9ce2] text-black px-4 py-2 rounded-lg text-sm font-bold">
              Enroll Now
             </button>
         </CardFooter>
