@@ -12,6 +12,8 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
+import { Auth } from './Auth';
 
 const CourseDetailsPage = ({ 
   title, 
@@ -30,6 +32,10 @@ const CourseDetailsPage = ({
     description : string,
     telegramLink : string
 }) => {
+
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const handlePurchase = async () => {
     // Here you would implement your payment gateway integration
     try {
@@ -39,8 +45,6 @@ const CourseDetailsPage = ({
       console.error('Payment failed:', error);
     }
   };
-
-  const router = useRouter();
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
@@ -113,12 +117,16 @@ const CourseDetailsPage = ({
 
       {/* Sticky Purchase Button */}
       <div className="sticky w-full bg-black p-4">
-        <Button 
-          className="w-full bg-[#4c9ce2]/80 hover:bg-[#4c9ce2]/60 py-6 text-lg font-semibold"
-          onClick={handlePurchase}
+        {status === "authenticated" ? (
+          <Button 
+            className="w-full bg-[#4c9ce2]/80 hover:bg-[#4c9ce2]/60 py-6 text-lg font-semibold"
+            onClick={handlePurchase}
         >
           Buy Now ₹{price}
         </Button>
+        ) : (
+          <Auth/>
+        )}
       </div>
     </div>
   );
