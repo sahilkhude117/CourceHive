@@ -1,13 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  User,
   Mail,
-  Phone,
-  MapPin,
   BookOpen,
-  Clock,
   ChevronRight,
-  Settings,
   LogOut,
   Bell,
   Shield,
@@ -26,25 +21,44 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-  } from "@/components/ui/dialog"
 import { EditProfile } from './EditProfile';
+import axios from 'axios';
+import { signOut } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+
+interface UserInfo {
+  name: string;
+  email: string;
+  purchases: {
+    courseId: string;
+  }[];
+}
 
 const StudentProfile = () => {
-  const studentInfo = {
-    name: "Alex Johnson",
-    email: "alex.j@example.com",
-    phone: "+91 98765 43210",
-    location: "Mumbai, India",
-    enrolledCourses: 3,
-    hoursWatched: 45
-  };
+  const router = useRouter();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await axios.get('/api/user');
+        setUserInfo(response.data.userInfo);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchUserInfo();
+  }, []);
+
+  const handleLogout = () => {
+    if(window.confirm('Are you sure you want to logout?')) {
+      signOut();
+      router.push('/');
+    }
+  }
 
   return (
     <div className="flex flex-col min-h-screen mt-10">
@@ -56,7 +70,7 @@ const StudentProfile = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-xl font-bold">{studentInfo.name}</h2>
+            <h2 className="text-xl font-bold">{userInfo?.name}</h2>
             <p className="text-gray-500">Student</p>
           </div>
         </div>
@@ -66,15 +80,8 @@ const StudentProfile = () => {
           <Card className=''>
             <CardContent className="p-4 flex flex-col items-center">
               <BookOpen className="h-6 w-6 text-primary mb-2" />
-              <p className="text-lg font-bold">{studentInfo.enrolledCourses}</p>
+              <p className="text-lg font-bold">{userInfo?.purchases.length}</p>
               <p className="text-sm text-gray-500">Enrolled Courses</p>
-            </CardContent>
-          </Card>
-          <Card>
-            <CardContent className="p-4 flex flex-col items-center">
-              <Clock className="h-6 w-6 text-primary mb-2" />
-              <p className="text-lg font-bold">{studentInfo.hoursWatched}h</p>
-              <p className="text-sm text-gray-500">Hours Watched</p>
             </CardContent>
           </Card>
         </div>
@@ -94,14 +101,7 @@ const StudentProfile = () => {
                 <Mail className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{studentInfo.email}</p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="h-5 w-5 text-gray-500" />
-                <div>
-                  <p className="text-sm text-gray-500">Phone</p>
-                  <p className="font-medium">{studentInfo.phone}</p>
+                  <p className="font-medium">{userInfo?.email}</p>
                 </div>
               </div>
             </CardContent>
@@ -139,7 +139,7 @@ const StudentProfile = () => {
           <Button 
             variant="destructive" 
             className="w-full mt-6"
-            onClick={() => {/* Handle logout */}}
+            onClick={handleLogout}
           >
             <LogOut className="h-5 w-5 mr-2" />
             Logout
