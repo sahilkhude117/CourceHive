@@ -1,104 +1,33 @@
-import prisma from '@/utils/db';
-import { useSearchParams } from 'next/navigation';
-import { NextRequest, NextResponse } from 'next/server';
+import { NEXT_AUTH_CONFIG } from "@/public/lib/auth";
+import prisma from "@/utils/db";
+import { getServerSession } from "next-auth";
+import { NextResponse } from "next/server";
 
-export const POST = async (req: Request) => {
+export const GET = async () => {
   try {
-    const body = await req.json();
-    const {
-        name,
-        email,
-        password
-    } = body;
+    const session = await getServerSession(NEXT_AUTH_CONFIG);
+    const user = session?.user;
 
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password
+  const userInfo = await prisma.user.findUnique({
+    where: {
+      email: user?.email
+    },
+    select: {
+      name: true,
+      email: true,
+      purchases: {
+        select: {
+          courseId: true
+        }
       }
-    });
+    }
+  })
 
-    return NextResponse.json(
-      {
-        user
-      },
-      {
-        status: 200,
-      }
-    );
-  } catch (e) {
-    console.log('Error', e);
-    return NextResponse.json(
-      {
-        error: 'Internal Server Error',
-        details: e,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-};
-
-export const PUT = async (req: Request) => {
-  try {
-    const body = await req.json();
-    const {
-        name,
-        email,
-    } = body;
-
-    const user = await prisma.user.update({
-      where: {
-        email
-      },
-      data: {
-        name,
-      }
-    });
-
-    return NextResponse.json(
-      {
-        status: 'success',
-        user
-      },
-      {
-        status: 200,
-      }
-    );
-  } catch (e) {
-    console.log('Error', e);
-    return NextResponse.json(
-      {
-        error: 'Internal Server Error',
-        details: e,
-      },
-      {
-        status: 500,
-      }
-    );
-  }
-};
-
-export const GET = async (req: NextRequest) => {
-  try {
-    const userId = req.nextUrl.searchParams.get('userId');
-
-    const user = await prisma.user.findUnique({
-      where: {
-        id: userId ?? undefined,
-      }
-    });
-
-    return NextResponse.json(
-      {
-        user
-      },
-      {
-        status: 200,
-      }
-    );
+  return NextResponse.json({
+    userInfo: userInfo
+  }, {
+    status: 200
+  })
   } catch (e) {
     console.log('Error', e);
     return NextResponse.json(
