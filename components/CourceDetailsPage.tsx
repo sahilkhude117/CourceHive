@@ -1,6 +1,6 @@
 "use client"
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ArrowLeft, CheckCircle, Share2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import Image from 'next/image';
@@ -14,6 +14,10 @@ import {
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { Auth } from './Auth';
+import axios from 'axios';
+import { useCallback } from 'react';
+import Razorpay from 'razorpay';
+import { PulseLoader } from 'react-spinners';
 
 const CourseDetailsPage = ({ 
   title, 
@@ -35,16 +39,108 @@ const CourseDetailsPage = ({
 
   const { data: session, status } = useSession();
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  interface RazorpayResponse {
+    razorpay_payment_id : string,
+    razorpay_order_id : string,
+    razorpay_signature : string
+  }
 
-  const handlePurchase = async () => {
-    // Here you would implement your payment gateway integration
+  const loadRazorpay = useCallback((): Promise<boolean> => {
+    return new Promise((resolve) => {
+      const script = document.createElement('script');
+      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      script.onload = () => {
+        resolve(true);
+      }
+      script.onerror = () => {
+        resolve(false);
+      }
+      document.body.appendChild(script);
+    })
+  }, []);
+
+  const handleClick = async () => {
+    setLoading(true);
     try {
-      // After successful payment:
-      window.location.href = telegramLink;
+      await onBuy();
     } catch (error) {
-      console.error('Payment failed:', error);
+      console.error("Failed to buy course", error);
+      alert("Failed to buy course");
+    } finally {
+      setLoading(false);
     }
   };
+
+  const handlePurchase = useCallback(
+    async (order: any) => {
+      const options = {
+        key : process.env.NEXT_PUBLIC_RAZORPAY_KEY,
+        amount : order.amount,
+        currency : "INR",
+        name : "CourceHive",
+        order_id : order.id,
+        handler : async (response: RazorpayResponse) => {
+          const payload = {
+            razorpay_payment_id : response.razorpay_payment_id,
+            razorpay_order_id : response.razorpay_order_id,
+            razorpay_signature : response.razorpay_signature
+          };
+
+          try {
+            const verify = await axios.post('/api/payment/verify-order', payload, {
+              headers : {
+                'Content-Type' : 'application/json'
+              }
+            });
+
+            if (verify.data.success) {
+              window.location.href = telegramLink;
+            } else {
+              alert("Payment failed");
+            }
+          } catch (error) {
+            console.error("Payment verification failed", error);
+            alert("Payment verification failed");
+          }
+        },
+        prefill : {
+          name : session?.user?.name,
+          email : session?.user?.email,
+        },
+      };
+
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+    },
+    []
+  );
+
+  const onBuy = async () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const idLoaded = await loadRazorpay();
+        if (!idLoaded) {
+          reject("Razorpay script failed to load");
+          alert("Razorpay script failed to load");
+          return;
+        }
+
+        try {
+          const response = await axios.post('/api/payment/create-order', { amount : price });
+          const order = response.data.order;
+          await handlePurchase(order);
+          resolve(true);
+        } catch (error) {
+          reject("Failed to create order");
+          alert("Failed to create order");
+        }
+      } catch (error) {
+        reject("Failed to create order");
+        alert("Failed to create order");
+      }
+    })
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
@@ -120,9 +216,10 @@ const CourseDetailsPage = ({
         {status === "authenticated" ? (
           <Button 
             className="w-full bg-[#4c9ce2]/80 hover:bg-[#4c9ce2]/60 py-6 text-lg font-semibold"
-            onClick={handlePurchase}
-        >
-          Buy Now ₹{price}
+            onClick={handleClick}
+            disabled={loading}
+          >
+            {loading ? <PulseLoader color="#fff" size={12} /> : `Buy Now ₹${price}`}
         </Button>
         ) : (
           <Auth/>
