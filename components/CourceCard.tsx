@@ -24,7 +24,7 @@ const CourseCard = ({
 }) => {
     const router = useRouter();
   return (
-    <div className='ml-12 mb-5 mr-12'>
+    <div className='ml-5 mb-5 mr-5'>
         <Card className="w-full max-w-sm mx-auto">
         <CardHeader className="p-0">
             <div className="relative">
