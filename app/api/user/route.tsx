@@ -41,3 +41,36 @@ export const GET = async () => {
     );
   }
 };
+
+export const PUT = async (req: Request) => {
+  const { name } = await req.json();
+  const session = await getServerSession(NEXT_AUTH_CONFIG);
+  const user = session?.user;
+
+  try {
+    await prisma.user.update({
+      where: { email: user?.email },
+      data: { name }
+    });
+
+    return NextResponse.json({
+      success: true,
+      name: name,
+      message: 'Profile updated successfully'
+    }, {
+      status: 200
+    });
+  } catch (e) {
+    console.log('Error', e);
+    return NextResponse.json(
+      {
+        error: 'Internal Server Error',
+        success: false,
+        details: e,
+      },
+      {
+        status: 500,
+      }
+    );
+  }
+}
