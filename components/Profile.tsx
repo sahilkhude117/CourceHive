@@ -86,7 +86,7 @@ const StudentProfile = () => {
         </div>
 
         {/* Quick Stats */}
-        <div className="grid grid-cols-2 gap-4 mt-6 ">
+        <div className="grid gap-4 mt-6 ">
           <Card className=''>
             <CardContent className="p-4 flex flex-col items-center">
               <BookOpen className="h-6 w-6 text-primary mb-2" />
