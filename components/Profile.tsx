@@ -23,8 +23,9 @@ import {
 } from "@/components/ui/tabs";
 import { EditProfile } from './EditProfile';
 import axios from 'axios';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
+import { Auth } from './Auth';
 
 interface UserInfo {
   name: string;
@@ -38,6 +39,7 @@ const StudentProfile = () => {
   const router = useRouter();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
+  const { data: session , status } = useSession();
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -63,6 +65,12 @@ const StudentProfile = () => {
   return (
     <div className="flex flex-col min-h-screen mt-10">
       {/* Profile Header */}
+      {status === 'unauthenticated' ? (
+        <div className='flex justify-center items-center h-screen'>
+          <Auth/>
+        </div>
+      ) : (
+      <div> 
       <div className="bg-black p-6">
         <div className="flex items-center space-x-4">
           <Avatar className="h-20 w-20">
@@ -70,7 +78,9 @@ const StudentProfile = () => {
             <AvatarFallback>CN</AvatarFallback>
           </Avatar>
           <div>
-            <h2 className="text-xl font-bold">{userInfo?.name}</h2>
+            <h2 className="text-xl font-bold">
+              {loading ? 'Loading...' : userInfo?.name}
+            </h2>
             <p className="text-gray-500">Student</p>
           </div>
         </div>
@@ -80,7 +90,7 @@ const StudentProfile = () => {
           <Card className=''>
             <CardContent className="p-4 flex flex-col items-center">
               <BookOpen className="h-6 w-6 text-primary mb-2" />
-              <p className="text-lg font-bold">{userInfo?.purchases.length}</p>
+              <p className="text-lg font-bold">{loading ? 'Loading...' : userInfo?.purchases.length}</p>
               <p className="text-sm text-gray-500">Enrolled Courses</p>
             </CardContent>
           </Card>
@@ -101,7 +111,7 @@ const StudentProfile = () => {
                 <Mail className="h-5 w-5 text-gray-500" />
                 <div>
                   <p className="text-sm text-gray-500">Email</p>
-                  <p className="font-medium">{userInfo?.email}</p>
+                  <p className="font-medium">{loading ? 'Loading...' : userInfo?.email}</p>
                 </div>
               </div>
             </CardContent>
@@ -142,10 +152,12 @@ const StudentProfile = () => {
             onClick={handleLogout}
           >
             <LogOut className="h-5 w-5 mr-2" />
-            Logout
+             Logout
           </Button>
         </TabsContent>
       </Tabs>
+      </div>
+      )}
     </div>
   );
 };
