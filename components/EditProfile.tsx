@@ -10,10 +10,8 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { AlertDialogContent, AlertDialogDescription, AlertDialogTitle } from "@radix-ui/react-alert-dialog";
-import { AlertDialog } from "@radix-ui/react-alert-dialog";
 import { useState } from "react";
-import { AlertDialogFooter } from "./ui/alert-dialog";
+
 
 export function EditProfile() {
   const [name, setName] = useState('');
