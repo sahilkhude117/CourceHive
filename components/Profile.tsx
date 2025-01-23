@@ -5,8 +5,9 @@ import {
   ChevronRight,
   LogOut,
   Bell,
-  Shield,
-  CreditCard
+  CreditCard,
+  Coins,
+  Shield
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -125,11 +126,11 @@ const StudentProfile = () => {
         <TabsContent value="settings" className="p-4 space-y-4 bg-black">
           <div className="space-y-4 ">
             {[
-              { icon: Bell, label: 'Notifications', desc: 'Manage your notifications' },
-              { icon: Shield, label: 'Privacy', desc: 'Manage your privacy settings' },
-              { icon: CreditCard, label: 'Payment Methods', desc: 'Manage your payment options' },
+              {icon: Mail, label: 'Terms & Conditions', desc: 'Terms of use and conditions', link: '/policies/terms'},
+              {icon: CreditCard, label: 'Refund & Cancellation', desc: 'Refund and cancellation policy', link: '/policies/refund'},
+              {icon: Shield, label: 'Privacy Policy', desc: 'Privacy policy', link: '/policies/privacy'},
             ].map((item, index) => (
-              <Card key={index} className="cursor-pointer hover:bg-gray-50">
+              <Card key={index} onClick={() => router.push(item.link)} className="cursor-pointer hover:bg-gray-50">
                 <CardContent className="p-4">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center space-x-3">
