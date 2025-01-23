@@ -16,8 +16,8 @@ const geistMono = localFont({
 });
 
 export const metadata: Metadata = {
-  title: "Paws Game Clone",
-  description: "Clone of the popular Telegram mini app Paws, developed by Nikandr Surkov.",
+  title: "CourceHive",
+  description: "Cources from the moon",
 };
 
 export default function RootLayout({
