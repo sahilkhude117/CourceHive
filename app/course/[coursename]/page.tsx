@@ -31,7 +31,7 @@ export default function Cources() {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const response = await axios.get(`/api/course?coursename=${coursename}`);
+                const response = await axios.get(`/api/course/${coursename}`);
                 setCourse(response.data.course);
             } catch (error) {
                 setError("Error fetching course data");
