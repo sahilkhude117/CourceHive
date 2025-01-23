@@ -1,110 +1,98 @@
-# Paws Telegram Mini App Clone
+# 🚀 Course Selling Platform
 
-This repository contains both the initial setup and the final version of the Paws Telegram mini app clone project. The repository includes the basic project structure, necessary images, icons, and styling.
+## 📋 Overview
 
-## Overview
-
-This project is a clone of the popular Telegram mini app, Paws. The repository provides two branches:
-
-1. **Initial Setup**: Contains the foundational Next.js 14 project structure with:
-   - Configured Tailwind CSS
-   - All necessary icons and images
-   - Type definitions
-   - Required fonts
-
-2. **Final Version**: The completed application featuring:
-   - Tab-based navigation
-   - Home screen with wallet connection and balance display
-   - Leaderboard with rankings
-   - Friends invitation system
-   - Tasks management system
-   - Animated UI elements
-
-## Getting Started
-
-Follow these instructions to get started with either version of the project:
-
-### Cloning the Repository
-
-1. **Clone the Repository**:
-    ```bash
-    git clone https://github.com/nikandr-surkov/Paws-Telegram-Mini-App-Clone.git
-    cd Paws-Telegram-Mini-App-Clone
-    ```
-
-### Initial Setup
-
-2. **Switch to the `initial-setup` Branch**:
-    ```bash
-    git checkout initial-setup
-    ```
-
-3. **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-
-4. **Run the Development Server**:
-    ```bash
-    npm run dev
-    ```
-
-5. **Open Your Browser**:
-    Navigate to http://localhost:3000 to see the initial setup.
-
-### Final Version
-
-2. **Switch to the `final-version` Branch**:
-    ```bash
-    git checkout final-version
-    ```
-
-3. **Install Dependencies**:
-    ```bash
-    npm install
-    ```
-
-4. **Run the Development Server**:
-    ```bash
-    npm run dev
-    ```
-
-5. **Open Your Browser**:
-    Navigate to http://localhost:3000 to see the final version of the application.
-
-## Technologies Used
-
-- Next.js 14
-- TypeScript
+A modern, full-stack course selling web application built with:
+- Next.js
+- Prisma ORM
+- NextAuth.js
+- Razorpay Payment Integration
 - Tailwind CSS
 
-## Project Structure
+## 🛠 Prerequisites
 
-```
-├── app/
-│   ├── globals.css
-│   ├── layout.tsx
-│   └── page.tsx
-├── components/
-│   ├── CheckFootprint.tsx
-│   ├── NavigationBar.tsx
-│   ├── TabContainer.tsx
-│   ├── HomeTab.tsx
-│   ├── LeaderboardTab.tsx
-│   ├── FriendsTab.tsx
-│   └── TasksTab.tsx
-├── contexts/
-│   └── TabContext.tsx
-├── icons/
-│   └── [icon files]
-├── images/
-│   └── [image files]
-└── utils/
-    └── types.ts
+- Node.js (v18+ recommended)
+- npm or yarn
+- PostgreSQL or MySQL database
+
+## 📦 Local Setup
+
+### 1. Clone the Repository
+```bash
+git clone https://github.com/sahilkhude117/CourceHive.git
+cd CourceHive
 ```
 
-## Contact
+### 2. Install Dependencies
+```bash
+npm install
+# or
+yarn install
+```
 
-For any inquiries, please contact me:
-- Telegram: [@nikandr_s](https://t.me/nikandr_s)
-- YouTube: [@NikandrSurkov](https://www.youtube.com/@NikandrSurkov)
+### 3. Environment Configuration
+Copy the example environment file:
+```bash
+cp .env.example .env
+```
+
+#### Required Environment Variables
+- `DATABASE_URL`: Your database connection string
+- `NEXTAUTH_SECRET`: Random secret for NextAuth
+- `NEXTAUTH_URL`: Your production/local url
+- `RAZORPAY_KEY_ID`: Razorpay API Key
+- `RAZORPAY_SECRET_KEY`: Razorpay Secret Key
+- `NEXT_PUBLIC_RAZORPAY_KEY`: Razorpay API Key
+
+### 4. Database Setup with Prisma
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Run database migrations
+npx prisma migrate dev
+
+
+### 5. Run Development Server
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 🔐 Authentication
+
+- Uses NextAuth.js with credentials provider
+- Implements secure JWT-based authentication
+- Custom sign-in page with error handling
+
+## 💳 Payment Integration
+
+- Razorpay payment gateway
+- Secure payment verification
+- Automatic Telegram group access post-payment
+
+## 🚀 Deployment
+
+### Vercel Deployment
+1. Fork the repository
+2. Connect to Vercel
+3. Set environment variables in Vercel dashboard
+
+### Database
+- Use managed PostgreSQL services like Supabase or Neon
+- Ensure `DATABASE_URL` is updated in deployment environment
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to branch (`git push origin feature/AmazingFeature`)
+5. Open a pull request
+
+## 📄 License
+
+Distributed under the MIT License. See `LICENSE` for more information.
