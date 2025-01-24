@@ -11,6 +11,7 @@ interface Cource {
     instructor: string;
     thumbnailUrl: string;
     duration: string;
+    originalPrice: number;
     price: number;
     category: {
         name: string;
@@ -46,7 +47,8 @@ export const CourcesTab = () => {
                 instructor = {cource.instructor}
                 thumbnail = {cource.thumbnailUrl}
                 duration = {cource.duration}
-                price = {cource.price.toString()}
+                originalPrice={cource.originalPrice}
+                price = {cource.price}
                 category = {cource.category.name}
                 slug = {cource.slug}
             />
