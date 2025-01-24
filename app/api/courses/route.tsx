@@ -12,6 +12,7 @@ export const GET = async () => {
         instructor: true,
         thumbnailUrl: true,
         duration: true,
+        originalPrice: true,
         price: true,
         category: {
           select: {
