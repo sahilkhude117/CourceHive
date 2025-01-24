@@ -17,6 +17,7 @@ export const GET = async (req: NextRequest, { params }: { params: { slug: string
         instructor: true,
         thumbnailUrl: true,
         duration: true,
+        originalPrice: true,
         price: true,
         telegramLink: true,
         category: {
