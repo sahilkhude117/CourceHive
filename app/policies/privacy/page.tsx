@@ -9,6 +9,7 @@ const PrivacyPolicyPage: React.FC = () => {
     const router = useRouter();
   return (
     <TabProvider>
+    <main className='min-h-screen bg-black text-white'>
     <div className="sticky top-0 z-10 bg-black shadow-sm ">
     <div className="flex items-center p-4">
         <Button onClick={() => router.back()} size="icon" className="mr-2">
@@ -99,6 +100,7 @@ const PrivacyPolicyPage: React.FC = () => {
         </div>
       </div>
     </div>
+    </main>
     </TabProvider>
   );
 };
