@@ -3,7 +3,7 @@ import CourceDetailsPage from "@/components/CourceDetailsPage";
 import { CourseSkeleton } from "@/components/SkeletonCard";
 import { TabProvider } from "@/contexts/TabContext";
 import axios from "axios";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
 interface Course {
@@ -14,6 +14,7 @@ interface Course {
     instructor: string;
     thumbnailUrl: string;
     duration: string;
+    originalPrice: number;
     price: number;
     telegramLink: string;
     category: {
@@ -52,6 +53,7 @@ export default function Cources() {
                         title={course?.title ?? ""}
                         instructor={course?.instructor ?? ""}
                         thumbnail={course?.thumbnailUrl ?? ""}
+                        originalPrice={course?.originalPrice ?? 0}
                         price={course?.price ?? 0}
                         category={course?.category?.name ?? ""}
                         description={course?.description ?? ""}
@@ -61,10 +63,4 @@ export default function Cources() {
             </div>
         </main>
     </TabProvider>
-}
-
-async function getCourseSlug() {
-    const searchParams = await useSearchParams();
-    const courseSlug = await searchParams.get('coursename');
-    return courseSlug;
 }
