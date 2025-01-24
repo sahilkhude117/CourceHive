@@ -25,6 +25,7 @@ model Course {
   description     String
   instructor      String    @default("Harkirat Singh")
   duration        String    @default("6 months")
+  originalPrice   Int       @default(1000)
   price           Int
   thumbnailUrl    String
   lessions        Int       @default(12)
