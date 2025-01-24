@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState } from 'react';
-import { ArrowLeft, CheckCircle, Share2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, IndianRupee, Share2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import Image from 'next/image';
 import { Button } from "@/components/ui/button";
@@ -18,11 +18,13 @@ import axios from 'axios';
 import { useCallback } from 'react';
 import Razorpay from 'razorpay';
 import { PulseLoader } from 'react-spinners';
+import { ShineBorder } from './ui/shine-border';
 
 const CourseDetailsPage = ({ 
   title, 
   instructor, 
   thumbnail, 
+  originalPrice,
   price, 
   category,
   description,
@@ -31,6 +33,7 @@ const CourseDetailsPage = ({
     title : string, 
     instructor : string, 
     thumbnail : string, 
+    originalPrice: number,
     price : number, 
     category : string,
     description : string,
@@ -142,6 +145,8 @@ const CourseDetailsPage = ({
     })
   }
 
+  const discountPecentage = Math.round(((originalPrice - price) / originalPrice) * 100);
+
   return (
     <div className="flex flex-col min-h-screen bg-black">
       {/* Header */}
@@ -168,6 +173,13 @@ const CourseDetailsPage = ({
         <Badge className="absolute top-4 right-4 bg-black">
           {category}
         </Badge>
+        <ShineBorder borderRadius={8} borderWidth={2} className="absolute top-2 left-2 text-xs">
+            <div className='rounded-full'>
+                <div className='font-bold'>
+                    {discountPecentage}% Off
+                </div>
+            </div>
+        </ShineBorder>
       </div>
 
       {/* Course Info */}
@@ -175,7 +187,19 @@ const CourseDetailsPage = ({
         <h2 className="text-xl font-bold mb-2">{title}</h2>
         <p className="text-gray-600 mb-2">By {instructor}</p>
         <div className="flex items-center justify-between mb-4">
-          <span className="text-2xl font-bold">₹{price}</span>
+        <div>
+            <div>
+                <div className='flex flex-row'>
+                    <IndianRupee size={12} className='mt-2'/>
+                    <span className="text-3xl font-bold">{price}</span>
+                </div>
+                
+                <div>
+                <span className="text-red-900 font-bold text-sm pr-1">- {discountPecentage}% </span>
+                    <span className="text-gray-500 line-through text-sm">₹{originalPrice}</span>
+                </div>
+            </div>
+          </div>
         </div>
       </div>
 
