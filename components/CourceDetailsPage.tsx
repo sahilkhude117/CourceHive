@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ArrowLeft, CheckCircle, IndianRupee, Share2 } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import Image from 'next/image';
@@ -21,6 +21,8 @@ import { PulseLoader } from 'react-spinners';
 import { ShineBorder } from './ui/shine-border';
 
 const CourseDetailsPage = ({ 
+  courseId,
+  userId,
   title, 
   instructor, 
   thumbnail, 
@@ -30,6 +32,8 @@ const CourseDetailsPage = ({
   description,
   telegramLink
 }:{
+    courseId : string,
+    userId : string,
     title : string, 
     instructor : string, 
     thumbnail : string, 
@@ -41,6 +45,7 @@ const CourseDetailsPage = ({
 }) => {
 
   const { data: session, status } = useSession();
+  const user = session?.user;
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   interface RazorpayResponse {
@@ -87,7 +92,10 @@ const CourseDetailsPage = ({
           const payload = {
             razorpay_payment_id : response.razorpay_payment_id,
             razorpay_order_id : response.razorpay_order_id,
-            razorpay_signature : response.razorpay_signature
+            razorpay_signature : response.razorpay_signature,
+            userId : userId, 
+            courseId : courseId,
+            amount : price
           };
 
           try {
@@ -122,8 +130,8 @@ const CourseDetailsPage = ({
   const onBuy = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        const idLoaded = await loadRazorpay();
-        if (!idLoaded) {
+        const isLoaded = await loadRazorpay();
+        if (!isLoaded) {
           reject("Razorpay script failed to load");
           alert("Razorpay script failed to load");
           return;
@@ -152,7 +160,7 @@ const CourseDetailsPage = ({
       {/* Header */}
       <div className="sticky top-0 z-10 bg-black shadow-sm ">
         <div className="flex items-center p-4">
-          <Button onClick={() => router.back()} variant="ghost" size="icon" className="mr-2">
+          <Button onClick={() => router.push('/')} variant="ghost" size="icon" className="mr-2">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-lg font-semibold flex-1 text-center">Course Details</h1>
