@@ -4,7 +4,7 @@ import axios from "axios";
 import { CoursesSkeleton } from "./SkeletonCard";
 
 interface Cource {
-    id: string;
+    courseId: string;
     title: string;
     slug: string;
     description: string;
@@ -42,7 +42,8 @@ export const CourcesTab = () => {
     return <div className="pt-20">
         {loading ? <CoursesSkeleton /> : cources.map((cource) => (
             <CourseCard 
-                key = {cource.id}
+                key = {cource.courseId}
+                courseId = {cource.courseId}
                 title = {cource.title} 
                 instructor = {cource.instructor}
                 thumbnail = {cource.thumbnailUrl}
