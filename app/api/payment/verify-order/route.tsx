@@ -1,3 +1,4 @@
+import prisma from '@/utils/db';
 import crypto from 'crypto';
 import { NextResponse } from 'next/server';
 
@@ -6,7 +7,10 @@ export async function POST(req: Request) {
     const { 
         razorpay_order_id, 
         razorpay_payment_id, 
-        razorpay_signature
+        razorpay_signature,
+        userId,
+        courseId,
+        amount
     } = body;
 
     const secret = process.env.RAZORPAY_SECRET_KEY || "default";
@@ -18,6 +22,17 @@ export async function POST(req: Request) {
         .digest('hex');
 
     if (razorpay_signature === expectedSignature) {
+        //payment success, create purchase
+        const purchase = await prisma.purchase.create({
+            data: {
+                userId: userId,
+                courseId: courseId,
+                paymentId: razorpay_payment_id,
+                amount: amount,
+                status: "COMPLETED"
+            }
+        });
+
         return NextResponse.json({ 
             success: true,
             message: 'Payment verified'
@@ -25,6 +40,17 @@ export async function POST(req: Request) {
             status: 200 
         });
     } else {
+        //payment failed, return error
+
+        await prisma.purchase.create({
+            data: {
+                userId: userId,
+                courseId: courseId,
+                paymentId: razorpay_payment_id,
+                amount: amount,
+                status: "FAILED"
+            }
+        })
         return NextResponse.json({ 
             success: false,
             message: 'Payment verification failed'
