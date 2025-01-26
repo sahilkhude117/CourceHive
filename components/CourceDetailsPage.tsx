@@ -164,9 +164,9 @@ const CourseDetailsPage = ({
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-lg font-semibold flex-1 text-center">Course Details</h1>
-          <Button variant="ghost" size="icon">
+          {/* <Button variant="ghost" size="icon">
             <Share2 className="h-6 w-6" />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
