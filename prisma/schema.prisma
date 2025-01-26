@@ -56,7 +56,7 @@ model Purchase {
   status        PaymentStatus @default(PENDING)
   purchasedAt   DateTime  @default(now())
 
-  @@unique([userId, courseId])
+  // @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
   @@index([status])
