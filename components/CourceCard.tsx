@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { ShineBorder } from './ui/shine-border';
 
 const CourseCard = ({ 
+  courseId,  
   title, 
   instructor, 
   thumbnail, 
@@ -16,6 +17,7 @@ const CourseCard = ({
   price, 
   category 
 }:{
+    courseId : string,
     title : string, 
     instructor : string, 
     thumbnail : string, 
