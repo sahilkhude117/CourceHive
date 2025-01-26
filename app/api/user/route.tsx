@@ -13,6 +13,7 @@ export const GET = async () => {
       email: user?.email
     },
     select: {
+      id: true,
       name: true,
       email: true,
       purchases: {
