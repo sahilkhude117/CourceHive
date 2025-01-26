@@ -24,6 +24,7 @@ interface Course {
 
 export default function Cources() {
     const [course, setCourse] = useState<Course | null>(null);
+    const [userId, setUserId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -32,8 +33,10 @@ export default function Cources() {
     useEffect(() => {
         const fetchCourse = async () => {
             try {
-                const response = await axios.get(`/api/course/${coursename}`);
-                setCourse(response.data.course);
+                const courseResponse = await axios.get(`/api/course/${coursename}`);
+                const userResponse = await axios.get(`/api/user`);
+                setUserId(userResponse.data.userInfo.id);
+                setCourse(courseResponse.data.course);
             } catch (error) {
                 setError("Error fetching course data");
             } finally {
@@ -50,7 +53,9 @@ export default function Cources() {
             <div className="flex-1 overflow-hidden max-w-md mx-auto pb-[72px]">
                 {loading ? <CourseSkeleton/> :
                     <CourceDetailsPage
+                        courseId={course?.id ?? ""}
                         title={course?.title ?? ""}
+                        userId={userId ?? ""}
                         instructor={course?.instructor ?? ""}
                         thumbnail={course?.thumbnailUrl ?? ""}
                         originalPrice={course?.originalPrice ?? 0}
