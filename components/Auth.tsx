@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button"
+import { Eye, EyeOff } from "lucide-react"
 import {
   Dialog,
   DialogContent,
@@ -13,14 +14,20 @@ import { Label } from "@/components/ui/label"
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { Badge } from "./ui/badge";
 
 export function Auth() {
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');   
+    const [password, setPassword] = useState(''); 
+    const [hiddenPassword, setHiddenPassword] = useState(true);  
     const [name, setName] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const router = useRouter();
+
+    const toggleVisibility = () => {
+        setHiddenPassword(!hiddenPassword);
+    }
 
     const handleSubmit = async (e:any) => {
         e.preventDefault();
@@ -55,7 +62,7 @@ export function Auth() {
                 setLoading(false);
                 return;
             } else {
-                router.push('/');
+                window.location.reload();
             }
         } catch (err) {
             setError('Something went wrong. Please try again.');
@@ -113,18 +120,25 @@ export function Auth() {
             {/* Password Field */}
             <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="password" className="text-right">
-                Password
+                    Password
                 </Label>
                 <Input 
                     id="password" 
                     name="password"
-                    type="password"
+                    type= {hiddenPassword ? "password" : "text"}
                     autoComplete="password"
                     required
                     placeholder="mypassword" 
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="col-span-3" />
+                    className="col-span-3 pr-10" 
+                />
+                <div
+                    onClick={toggleVisibility}
+                    className="absolute right-8 top-3/2 cursor-pointer"
+                >
+                    {hiddenPassword ? <EyeOff/> : <Eye/> }
+                </div>
             </div>
             </div>
 
