@@ -130,7 +130,7 @@ const StudentProfile = () => {
               {icon: Mail, label: 'Terms & Conditions', desc: 'Terms of use and conditions', link: '/policies/terms'},
               {icon: CreditCard, label: 'Refund & Cancellation', desc: 'Refund and cancellation policy', link: '/policies/refund'},
               {icon: Shield, label: 'Privacy Policy', desc: 'Privacy policy', link: '/policies/privacy'},
-              {icon: Phone, label: 'Contact', desc: 'Contact', link: '/policies/contact'},
+              //{icon: Phone, label: 'Contact', desc: 'Contact', link: '/policies/contact'},
             ].map((item, index) => (
               <Card key={index} onClick={() => router.push(item.link)} className="cursor-pointer hover:bg-gray-50">
                 <CardContent className="p-4">
