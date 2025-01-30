@@ -74,7 +74,7 @@ export function Auth() {
     return (
         <Dialog>
         <DialogTrigger asChild >
-            <Button className="w-full bg-[#4c9ce2]/80 hover:bg-[#4c9ce2]/60 py-6 text-lg font-semibold">
+            <Button className="w-full py-6 text-lg font-semibold">
              Login
             </Button>
         </DialogTrigger>
