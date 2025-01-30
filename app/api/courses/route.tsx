@@ -9,16 +9,9 @@ export const GET = async () => {
         title: true,
         slug: true,
         description: true,
-        instructor: true,
         thumbnailUrl: true,
-        duration: true,
         originalPrice: true,
         price: true,
-        category: {
-          select: {
-            name: true,
-          }
-        }
       }
     });
 
