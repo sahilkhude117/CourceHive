@@ -1,8 +1,7 @@
 'use client'
 
 import { TabType } from "@/utils/types";
-import { ChildProcess } from "child_process";
-import { Children, createContext, useContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 type TabContextType = {
     activeTab: TabType
