@@ -4,6 +4,7 @@ import { useTab } from "@/contexts/TabContext";
 import HomeTab from "./HomeTab";
 import { CourcesTab } from "./CourcesTab";
 import Profile from "./Profile";
+import MyCourses from "./MyCources";
 
 const TabContainer = () => {
     const { activeTab } = useTab();
@@ -14,6 +15,9 @@ const TabContainer = () => {
             </div>
             <div className={`${activeTab === 'cources' ? 'is-show' : 'is-hide'}`}>
                 <CourcesTab/>
+            </div>
+            <div className={`${activeTab === 'mycources' ? 'is-show' : 'is-hide'}`}>
+                <MyCourses/>
             </div>
             <div className={`${activeTab === 'profile' ? 'is-show' : 'is-hide'}`}>
                 <Profile/>
