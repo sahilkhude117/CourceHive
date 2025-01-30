@@ -1,127 +1,113 @@
-"use client"
+'use client'
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import { TabProvider } from '@/contexts/TabContext';
 
-const SignInPage = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const router = useRouter();
+// Mock purchased courses data
+const mockPurchasedCourses = [
+  {
+    id: 1,
+    title: 'Web Development Bootcamp',
+    purchaseDate: '2024-03-15',
+    thumbnail: '/images/thumbnails/cohort/cohort3.png',
+    progress: 65,
+    telegramLink: 'https://t.me/course1'
+  },
+  {
+    id: 2,
+    title: 'Mobile App Design',
+    purchaseDate: '2024-02-28',
+    thumbnail: '/images/thumbnails/cohort/cohort3.png',
+    progress: 0,
+    telegramLink: 'https://t.me/course2'
+  },
+];
 
-  const handleSubmit = async (e:any) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
-
-    try {
-      const result = await signIn('credentials', {
-        redirect: false,
-        email,
-        password,
-      });
-
-      if (result?.error) {
-        setError('Invalid email or password');
-      } else {
-        router.push('/');
-      }
-    } catch (err) {
-      setError('Something went wrong. Please try again.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const CourseCard = ({ course }:{course : any}) => {
   return (
-    <TabProvider>
-    <div className="min-h-screen flex items-center justify-center bg-black py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        {/* Header */}
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-white">
-            Welcome back
-          </h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Sign in to continue to your account
+    <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+      <div className="flex items-start">
+        <img 
+          src={course.thumbnail}
+          alt={course.title}
+          className="w-24 h-24 rounded-lg object-cover mr-4"
+        />
+        <div className="flex-1">
+          <h3 className="text-lg font-semibold mb-1">{course.title}</h3>
+          <p className="text-gray-500 text-sm mb-2">
+            Purchased: {new Date(course.purchaseDate).toLocaleDateString()}
           </p>
+          <div className="relative pt-1">
+            <div className="flex mb-2 items-center justify-between">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <div
+                  className="bg-blue-500 rounded-full h-2"
+                  style={{ width: `${course.progress}%` }}
+                ></div>
+              </div>
+            </div>
+            <span className="text-xs font-semibold text-blue-500">
+              {course.progress}% Completed
+            </span>
+          </div>
+          <a
+            href={course.telegramLink}
+            className="mt-2 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-600"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {course.progress === 0 ? "Start" : "Continue Learning" }
+          </a>
         </div>
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
-          <div className="rounded-md shadow-sm space-y-4">
-            {/* Email Field */}
-            <div>
-              <label htmlFor="email" className="sr-only">
-                Email address
-              </label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Email address"
-              />
-            </div>
-
-            {/* Password Field */}
-            <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                autoComplete="current-password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="appearance-none rounded-lg relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-                placeholder="Password"
-              />
-            </div>
-          </div>
-
-          {/* Error Message */}
-          {error && (
-            <div className="text-red-500 text-sm text-center">
-              {error}
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <div>
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <span className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Signing in...
-                </span>
-              ) : (
-                'Sign in'
-              )}
-            </button>
-          </div>
-        </form>
       </div>
     </div>
-    </TabProvider>
   );
 };
 
-export default SignInPage;
+const MyCourses = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const filteredCourses = mockPurchasedCourses.filter(course =>
+    course.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <div className="min-h-screen bg-gray-50 p-4 max-w-2xl mx-auto">
+      {/* Search Bar */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="Search your courses..."
+          className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </div>
+
+      {/* Courses List */}
+      {filteredCourses.length === 0 ? (
+        <div className="text-center mt-8">
+          <p className="text-gray-500 mb-4">No courses found matching your search</p>
+          <p className="text-gray-400 text-sm">
+            Haven't purchased any courses yet? Check out our Courses tab!
+          </p>
+        </div>
+      ) : (
+        filteredCourses.map(course => (
+          <CourseCard key={course.id} course={course} />
+        ))
+      )}
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200">
+        <div className="flex justify-around p-4 max-w-2xl mx-auto">
+          <button className="text-gray-400 px-4 py-2">Home</button>
+          <button className="text-gray-400 px-4 py-2">Courses</button>
+          <button className="text-blue-500 font-semibold px-4 py-2">
+            My Courses
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default MyCourses;
