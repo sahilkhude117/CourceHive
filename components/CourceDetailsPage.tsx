@@ -1,9 +1,8 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { ArrowLeft, CheckCircle, IndianRupee, Share2 } from 'lucide-react';
+import { ArrowLeft, CheckCircle, CheckCircle2, ChevronLeft, GraduationCap, Clock, IndianRupee, Share2, ShoppingCart } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
-import Image from 'next/image';
 import { Button } from "@/components/ui/button";
 import {
   Accordion,
@@ -16,33 +15,15 @@ import { useSession } from 'next-auth/react';
 import { Auth } from './Auth';
 import axios from 'axios';
 import { useCallback } from 'react';
-import Razorpay from 'razorpay';
 import { PulseLoader } from 'react-spinners';
-import { ShineBorder } from './ui/shine-border';
+import { CardHeader, Card, CardContent, CardFooter } from './ui/card';
+import { Course } from '@/app/course/[coursename]/page';
+import { TabProvider } from '@/contexts/TabContext';
+import { CourseSkeleton } from './SkeletonCard';
 
-const CourseDetailsPage = ({ 
-  courseId,
-  userId,
-  title, 
-  instructor, 
-  thumbnail, 
-  originalPrice,
-  price, 
-  category,
-  description,
-  telegramLink
-}:{
-    courseId : string,
-    userId : string,
-    title : string, 
-    instructor : string, 
-    thumbnail : string, 
-    originalPrice: number,
-    price : number, 
-    category : string,
-    description : string,
-    telegramLink : string
-}) => {
+
+
+const CourseDetailsPage = ({course, userId}:{course: Course | null; userId: String | null}) => {
 
   const { data: session, status } = useSession();
   const user = session?.user;
@@ -53,7 +34,7 @@ const CourseDetailsPage = ({
     razorpay_order_id : string,
     razorpay_signature : string
   }
-
+  
   const loadRazorpay = useCallback((): Promise<boolean> => {
     return new Promise((resolve) => {
       const script = document.createElement('script');
@@ -81,7 +62,7 @@ const CourseDetailsPage = ({
   };
 
   const handlePurchase = useCallback(
-    async (order: any) => {
+    async (order: any,) => {
       const options = {
         key : process.env.NEXT_PUBLIC_RAZORPAY_KEY,
         amount : order.amount,
@@ -94,8 +75,8 @@ const CourseDetailsPage = ({
             razorpay_order_id : response.razorpay_order_id,
             razorpay_signature : response.razorpay_signature,
             userId : userId, 
-            courseId : courseId,
-            amount : price
+            courseId : course?.id ?? "",
+            amount : course?.price ?? 0
           };
 
           try {
@@ -106,7 +87,7 @@ const CourseDetailsPage = ({
             });
 
             if (verify.data.success) {
-              window.location.href = telegramLink;
+              window.location.href = course?.telegramLink ?? "";
             } else {
               alert("Payment failed");
             }
@@ -138,7 +119,7 @@ const CourseDetailsPage = ({
         }
 
         try {
-          const response = await axios.post('/api/payment/create-order', { amount : price });
+          const response = await axios.post('/api/payment/create-order', { amount : course?.price ?? 0});
           const order = response.data.order;
           await handlePurchase(order);
           resolve(true);
@@ -153,109 +134,121 @@ const CourseDetailsPage = ({
     })
   }
 
-  const discountPecentage = Math.round(((originalPrice - price) / originalPrice) * 100);
+  const discountPercentage = Math.round(
+    (((course?.originalPrice ?? 0) - (course?.price ?? 0 )) / (course?.originalPrice ?? 0)) * 100
+  );
+
+  const totalLessons = (course?.modules.reduce((acc, module) => acc + module.lessons.length, 0));
+  const totalDuration = course?.modules.reduce(
+    (acc, module) => acc + module.lessons.reduce((sum, lesson) => sum + lesson.duration, 0),0
+  );
 
   return (
     <div className="flex flex-col min-h-screen bg-black">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-black shadow-sm ">
-        <div className="flex items-center p-4">
-          <Button onClick={() => router.push('/')} variant="ghost" size="icon" className="mr-2">
-            <ArrowLeft className="h-6 w-6" />
-          </Button>
-          <h1 className="text-lg font-semibold flex-1 text-center">Course Details</h1>
-          {/* <Button variant="ghost" size="icon">
-            <Share2 className="h-6 w-6" />
-          </Button> */}
-        </div>
-      </div>
-
-      {/* Course Image */}
-      <div className="relative rounded-lg overflow-hidden w-full h-60">
-        <Image
-          src={thumbnail}
-          alt={title}
-          fill
-          className="object-cover rounded-lg"
+      <div className="relative">
+        <Button onClick={() => {
+          router.push('/')
+        }} variant="ghost" size="sm" className="absolute top-4 left-4 z-10">
+          <ChevronLeft className="h-4 w-4 mr-2" />
+          Back
+        </Button>
+        <img 
+          src={course?.thumbnailUrl ?? ""}
+          alt={course?.title ?? ""}
+          className="w-full h-70 object-cover rounded-b-lg"
         />
-        <Badge className="absolute top-4 right-4 bg-black">
-          {category}
-        </Badge>
-        <ShineBorder borderRadius={8} borderWidth={2} className="absolute top-2 left-2 text-xs">
-            <div className='rounded-full'>
-                <div className='font-bold'>
-                    {discountPecentage}% Off
-                </div>
-            </div>
-        </ShineBorder>
       </div>
 
-      {/* Course Info */}
-      <div className="p-4 bg-black">
-        <h2 className="text-xl font-bold mb-2">{title}</h2>
-        <p className="text-gray-600 mb-2">By {instructor}</p>
-        <div className="flex items-center justify-between mb-4">
-        <div>
-            <div>
-                <div className='flex flex-row'>
-                    <IndianRupee size={12} className='mt-2'/>
-                    <span className="text-3xl font-bold">{price}</span>
-                </div>
-                
-                <div>
-                <span className="text-red-900 font-bold text-sm pr-1">- {discountPecentage}% </span>
-                    <span className="text-gray-500 line-through text-sm">₹{originalPrice}</span>
-                </div>
+      <div className="p-4 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Main Content */}
+        <div className="lg:col-span-2">
+          <h1 className="text-xl text-white font-bold mb-2">{course?.title ?? ""}</h1>
+          <div className="flex items-center gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-gray-200">By {course?.instructor ?? ""}</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <Clock className="h-4 w-4" />
+              <span>{totalDuration} m</span>
+            </div>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <GraduationCap className="h-4 w-4" />
+              <span>{totalLessons} lessons</span>
             </div>
           </div>
+
+          <p className="text-gray-600 mb-6">{course?.description}</p>
+
+          {/* Curriculum */}
+          <Accordion type="single" collapsible className="w-full">
+            {course?.modules.map((module, index) => {
+              const moduleLessons = module.lessons.length;
+              const moduleDuration = module.lessons.reduce((sum, lesson) => sum + lesson.duration, 0);
+
+              return (
+                <AccordionItem key={index} value={`item-${index}`}>
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-1">
+                      <span className="text-sm font-medium text-gray-300">{module.title}</span>
+                      <span className="absolute right-8 text-xs text-gray-500 ">{moduleDuration} mins</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                      <Badge className="text-xs text-gray-300">
+                        {moduleLessons} lessons
+                      </Badge>
+                    <div className="text-sm text-gray-400 mt-2">{module.description}</div>
+                  </AccordionContent>
+                </AccordionItem>
+              );
+            })}
+          </Accordion>
         </div>
-      </div>
 
-      {/* Course Details */}
-      <div className="flex-1 pl-4 pr-4 pt-0 pb-0 bg-black">
-        <Accordion type="single" collapsible>
-          <AccordionItem value="description">
-            <AccordionTrigger className="text-lg font-semibold">
-              Course Description
-            </AccordionTrigger>
-            <AccordionContent>
-              <p className="text-gray-600">{description}</p>
-            </AccordionContent>
-          </AccordionItem>
-
-          <AccordionItem value="whatYouGet">
-            <AccordionTrigger className="text-lg font-semibold">
-              What You'll Get
-            </AccordionTrigger>
-            <AccordionContent>
-              <ul className="space-y-2">
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Lifetime access to course materials
-                </li>
-                <li className="flex items-center">
-                  <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
-                  Access to exclusive Telegram group
-                </li>
-              </ul>
-            </AccordionContent>
-          </AccordionItem>
-        </Accordion>
-      </div>
-
-      {/* Sticky Purchase Button */}
-      <div className="sticky w-full bg-black p-4">
-        {status === "authenticated" ? (
-          <Button 
-            className="w-full bg-[#4c9ce2]/80 hover:bg-[#4c9ce2]/60 py-6 text-lg font-semibold"
-            onClick={handleClick}
-            disabled={loading}
-          >
-            {loading ? <PulseLoader color="#fff" size={12} /> : `Buy Now ₹${price}`}
-        </Button>
-        ) : (
-          <Auth/>
-        )}
+        {/* Purchase Card */}
+        <div className='mt-4'>
+          <Card className="sticky top-4">
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <div className="space-y-1">
+                  <div className="text-3xl font-bold">₹{course?.price ?? 0}</div>
+                  <div className="text-sm text-gray-500 line-through">₹{course?.originalPrice ?? 0}</div>
+                </div>
+                <Badge className="bg-green-100 text-green-800">
+                  {discountPercentage}% OFF
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {status === 'authenticated' ? (
+              <Button
+                className="w-full py-6 text-lg font-semibold"
+                onClick={handleClick}
+                disabled={loading}
+              >
+                <ShoppingCart className="mr-2 h-4 w-4" />
+                  {loading ? <PulseLoader color="#fff" size={12} /> : `Buy Now`}
+              </Button>
+              ):(
+                <Auth/>
+              )}
+              <div className="space-y-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>Full lifetime access</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-green-500" />
+                  <span>14-day money-back guarantee</span>
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter className="text-xs text-gray-500">
+              Includes Exclusive access to video and downloadable resources
+            </CardFooter>
+          </Card>
+        </div>
       </div>
     </div>
   );
