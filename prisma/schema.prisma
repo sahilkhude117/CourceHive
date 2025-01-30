@@ -13,6 +13,7 @@ model User {
   email         String    @unique
   password      String
   name          String?
+  progress      Progress[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   purchases     Purchase[]
@@ -24,18 +25,64 @@ model Course {
   slug            String    @unique
   description     String
   instructor      String    @default("Harkirat Singh")
-  duration        String    @default("6 months")
   originalPrice   Int       @default(1000)
   price           Int
   thumbnailUrl    String
-  lessions        Int       @default(12)
-  videoUrl        String    @default("https://youtu.be/RKramRyUvHQ?si=5icD1e1RYOR5Q2tg")
   telegramLink    String    // Telegram group link
   categoryId      String
   category        Category  @relation(fields: [categoryId], references: [id])
   purchases       Purchase[]
+  modules         Module[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 
   @@index([categoryId])
+}
+
+model Module {
+  id              String     @id @default(cuid())
+  title           String
+  description     String?
+  order           Int        @default(0)
+  courseId        String
+  course          Course     @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons         Lesson[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([courseId])
+  @@unique([order,courseId])
+}
+
+model Lesson {
+  id              String     @id @default(cuid())
+  title           String
+  description     String?
+  videoUrl        String 
+  duration        Int        //duration in minutes
+  order           Int        @default(0)
+  moduleId        String
+  module          Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  progress        Progress[]
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+
+  @@index([order])
+  @@unique([order,moduleId])
+}
+
+model Progress {
+  id              String      @id @default(cuid())
+  userId          String
+  user            User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId        String
+  lesson          Lesson      @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed       Boolean     @default(false)
+  completedAt     DateTime?
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+  @@index([lessonId])
 }
 
 model Category {
