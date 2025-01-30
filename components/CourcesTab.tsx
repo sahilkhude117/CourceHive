@@ -3,23 +3,19 @@ import CourseCard from "./CourceCard"
 import axios from "axios";
 import { CoursesSkeleton } from "./SkeletonCard";
 
-interface Cource {
+export interface Cource {
     courseId: string;
     title: string;
     slug: string;
     description: string;
-    instructor: string;
     thumbnailUrl: string;
-    duration: string;
     originalPrice: number;
     price: number;
-    category: {
-        name: string;
-    }
 }
 
 export const CourcesTab = () => {
     const [cources, setCources] = useState<Cource []>([]);
+    const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -39,20 +35,47 @@ export const CourcesTab = () => {
         fetchCources();
     }, []);
 
-    return <div className="pt-20">
-        {loading ? <CoursesSkeleton /> : cources.map((cource) => (
-            <CourseCard 
-                key = {cource.courseId}
-                courseId = {cource.courseId}
-                title = {cource.title} 
-                instructor = {cource.instructor}
-                thumbnail = {cource.thumbnailUrl}
-                duration = {cource.duration}
-                originalPrice={cource.originalPrice}
-                price = {cource.price}
-                category = {cource.category.name}
-                slug = {cource.slug}
+    const filteredCourses = cources.filter(course => 
+        course.title.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
+    return <div className="min-h-screen bg-black p-4 max-w-2xl mx-auto mt-10">
+        {/* Search Bar  */}
+        <div className="mb-6">
+            <input 
+                type="text"
+                placeholder="Search all courses..."
+                className="w-full text-black p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
             />
-        ))}
+        </div>
+
+        {/* Cources List  */}
+        {loading ? <CoursesSkeleton/> : (
+        <div>
+        {filteredCourses.length === 0 ? (
+            <div className="text-center mt-8">
+                <p className="text-gray-500 mb-4">
+                    No courses found matching your Search
+                </p>
+                <p className="text-gray-400 text-sm">
+                    Check back later for new courses!
+                </p>
+          </div>
+        ):(
+            filteredCourses.map(course => (
+                <CourseCard
+                    title = {course.title}
+                    thumbnail = {course.thumbnailUrl}
+                    description = {course.description}
+                    slug = {course.slug}
+                    originalPrice = {course.originalPrice}
+                    price = {course.price}
+                />
+            ))
+        )}
+        </div>
+        )}
     </div>
 }
