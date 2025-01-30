@@ -1,71 +1,89 @@
-"use client"
-import CourceDetailsPage from "@/components/CourceDetailsPage";
-import { CourseSkeleton } from "@/components/SkeletonCard";
-import { TabProvider } from "@/contexts/TabContext";
-import axios from "axios";
-import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+'use client'
 
-interface Course {
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import axios from "axios";
+import { CourseSkeleton } from "@/components/SkeletonCard";
+import CourceDetailsPage from "@/components/CourceDetailsPage";
+import { TabProvider } from "@/contexts/TabContext";
+import { useSession } from "next-auth/react";
+import React from "react";
+import { Auth } from "@/components/Auth";
+
+export interface Course {
+  id: string;
+  title: string;
+  slug: string;
+  description: string;
+  instructor: string;
+  thumbnailUrl: string;
+  originalPrice: number;
+  price: number;
+  telegramLink: string;
+  modules: Module[]
+}
+
+export interface Module {
     id: string;
     title: string;
-    slug: string;
     description: string;
-    instructor: string;
-    thumbnailUrl: string;
-    duration: string;
-    originalPrice: number;
-    price: number;
-    telegramLink: string;
-    category: {
-        name: string;
-    }
+    lessons: Lesson[]   
 }
 
-export default function Cources() {
-    const [course, setCourse] = useState<Course | null>(null);
-    const [userId, setUserId] = useState<string | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
+export interface Lesson {
+    id: string,
+    duration: number
+}
 
-    const { coursename } = useParams();
+export default function CoursePage() {
+  const [course, setCourse] = useState<Course | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const { data: session, status } = useSession();
 
-    useEffect(() => {
-        const fetchCourse = async () => {
-            try {
-                const courseResponse = await axios.get(`/api/course/${coursename}`);
-                const userResponse = await axios.get(`/api/user`);
-                setUserId(userResponse.data.userInfo.id);
-                setCourse(courseResponse.data.course);
-            } catch (error) {
-                setError("Error fetching course data");
-            } finally {
-                setLoading(false);
-            }
-        }
-        if (coursename) {
-            fetchCourse();
-        }
-    }, [coursename]);
+  const { coursename } = useParams();
 
-    return <TabProvider>
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const courseResponse = await axios.get(`/api/course/${coursename}`);
+        setCourse(courseResponse.data.course);
+      } catch (error){
+        setError("Error fetching course data");
+      } finally {
+        setLoading(false);
+      }
+    }
+    const fetchUser = async () => {
+      try {
+        const userResponse = await axios.get('/api/user');
+        setUserId(userResponse.data.userInfo.id);
+      } catch(e) {
+        setError("error fetching user id");
+      }
+    }
+    if (coursename){
+      fetchCourse();
+    }
+    if(session?.user){
+      fetchUser();
+    }
+  },[coursename]);
+
+  return (
+    <TabProvider>
         <main className="min-h-screen bg-black text-white">
-            <div className="flex-1 overflow-hidden max-w-md mx-auto pb-[72px]">
-                {loading ? <CourseSkeleton/> :
-                    <CourceDetailsPage
-                        courseId={course?.id ?? ""}
-                        title={course?.title ?? ""}
-                        userId={userId ?? ""}
-                        instructor={course?.instructor ?? ""}
-                        thumbnail={course?.thumbnailUrl ?? ""}
-                        originalPrice={course?.originalPrice ?? 0}
-                        price={course?.price ?? 0}
-                        category={course?.category?.name ?? ""}
-                        description={course?.description ?? ""}
-                        telegramLink={course?.telegramLink ?? ""}   
-                    />
-                }
-            </div>
+        <div className="flex-1 overflow-hidden max-w-md mx-auto pb-[72px]">
+            {loading ? <CourseSkeleton/> :
+                <CourceDetailsPage
+                    course = {course}
+                    userId = {userId}
+                />
+            }
+        </div>
         </main>
     </TabProvider>
-}
+  );
+};
+
