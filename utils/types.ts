@@ -5,4 +5,4 @@ export type IconProps = {
     className?: string;
 }
 
-export type TabType = 'home' | 'cources' | 'profile';
+export type TabType = 'home' | 'cources' | 'mycources'| 'profile';
