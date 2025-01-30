@@ -1,99 +1,58 @@
 import React from 'react';
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { PlayCircle, Clock, IndianRupee} from 'lucide-react';
-import Image from 'next/image';
 import { useRouter } from 'next/navigation';
-import { ShineBorder } from './ui/shine-border';
 
-const CourseCard = ({ 
-  courseId,  
-  title, 
-  instructor, 
-  thumbnail, 
-  duration, 
+const CourseCard = ({   
+  title,
+  thumbnail,
+  description, 
   slug,
   originalPrice,
-  price, 
-  category 
+  price,
 }:{
-    courseId : string,
     title : string, 
-    instructor : string, 
     thumbnail : string, 
-    duration : string,  
+    description : string
     slug : string,
     originalPrice: number,
-    price : number, 
-    category : string   
+    price : number,  
 }) => {
     const router = useRouter();
     const discountPecentage = Math.round(((originalPrice - price) / originalPrice) * 100);
 
     return (
-        <div className='ml-5 mb-5 mr-5'>
-            <Card className="w-full max-w-sm mx-auto">
-            <CardHeader className="p-0">
-                <div className="relative">
-                <Image
+        <div className='bg-zinc-800 rounded-lg shadow-md p-4 mb-4'>
+            <div className='flex items-start'>
+                <img 
                     src={thumbnail}
-                    alt="courceHive Logo"
-                    className='w-full h-52 object-cover rounded-t-lg'
-                    width={500}
-                    height={500}
+                    alt={title}
+                    className="w-24 h-24 rounded-lg object-cover mr-4"
                 />
-                <Badge className="absolute top-2 right-2 bg-primary">
-                    {category}
-                </Badge>
-                <ShineBorder borderRadius={8} borderWidth={2} className="absolute top-2 left-2 text-xs">
-                    <div className='rounded-full'>
-                        <div className='font-bold'>
-                            {discountPecentage}% Off
-                        </div>
-                    </div>
-                </ShineBorder>
-                </div>
-            </CardHeader>
-            <CardContent className="p-4">
-                <h3 className="text-lg font-semibold mb-2 line-clamp-2">{title}</h3>
-                <div className="flex items-center gap-2 text-sm text-gray-600 mb-3">
-                <span>{instructor}</span>
-                </div>
-                <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-1">
-                    <Clock className="w-4 h-4" />
-                    <span className="text-sm">{duration}</span>
-                </div>
-                <div className="flex items-center gap-1">
-                    <PlayCircle className="w-4 h-4" />
-                    <span className="text-sm">12 lessons</span>
-                </div>
-                </div>
-            </CardContent>
-            <CardFooter className="p-4 pt-0 flex justify-between items-center">
-                <div>
+                <div className='flex-1'>
+                    <h3 className="text-lg font-semibold mb-1">{title}</h3>
+                    <p className="text-gray-500 text-sm mb-2">{description}</p>
+
                     <div>
-                        <div className='flex flex-row'>
-                            <IndianRupee size={12} className='mt-2'/>
-                            <span className="text-3xl font-bold">{price}</span>
-                        </div>
-                        
-                        <div>
-                        <span className="text-red-900 font-bold text-sm pr-1">- {discountPecentage}% </span>
-                            <span className="text-gray-500 line-through text-sm">₹{originalPrice}</span>
-                        </div>
+                        <span className="text-xl font-bold p-1 text-blue-500">
+                        ₹{price}
+                        </span>
+                        <span className="text-gray-400 p-1 text-sm line-through">
+                        ₹{originalPrice}
+                        </span>
+                        <span className="bg-green-200 m-1 text-green-800 px-1 py-1 rounded text-xs">
+                            {discountPecentage}% OFF
+                        </span>
                     </div>
+
+                    <button
+                        onClick={() => router.push(`/course/${slug}`)}
+                        className="w-full bg-blue-500 text-white px-4 py-2 mt-2 rounded-lg text-sm font-medium hover:bg-blue-600"
+                    >
+                        Enroll Now
+                    </button>
                 </div>
-                
-                <button onClick={() => {
-                    router.push(`/course/${slug}`);
-                }} className="bg-[#4c9ce2] text-black px-4 py-2 rounded-lg text-sm font-bold">
-                Enroll Now
-                </button>
-            </CardFooter>
-            </Card>
+            </div>
         </div>
-  );
+    );
 };
 
 export default CourseCard;
