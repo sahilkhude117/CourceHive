@@ -119,6 +119,7 @@ const HomeTab = () => {
                     <CarouselPrevious />
                     <CarouselNext />
                 </Carousel>
+                
             </div>
             
             {/* <CourceHiveLogo size={2000} className="w-100 h-100 mb-4"/> */}
