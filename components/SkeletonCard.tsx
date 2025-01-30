@@ -23,30 +23,44 @@ export function HomeSkeleton() {
 }
 
 export function CoursesSkeleton() {
-    return (
-        <div>
-            <div className="flex flex-col justify-center items-center space-y-3">
-            <Skeleton className="h-[150px] w-[350px] rounded-xl bg-gray-100" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[350px] bg-gray-100" />
-                <Skeleton className="h-4 w-[200px] bg-gray-100" />
-            </div>
-            </div>
+    return (<div>
+      <div className="flex flex-col space-y-3">
+        <div className="flex">
+          <Skeleton className="h-[150px] w-[120px] rounded-xl bg-gray-100 m-1" />
+          <div>
+            <Skeleton className="h-[100px] w-[300px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[10px] w-[100px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[30px] w-[250px] rounded-xl bg-gray-100 m-1" />
+          </div>
+        </div>
 
-            <div className="flex flex-col justify-center items-center space-y-3">
-            <Skeleton className="h-[150px] w-[350px] rounded-xl bg-gray-100 mt-5" />
-            <div className="space-y-2">
-            <Skeleton className="h-4 w-[350px] bg-gray-100" />
-            <Skeleton className="h-4 w-[200px] bg-gray-100" />
-            </div>
-            </div>
-            <div className="flex flex-col justify-center items-center space-y-3 mt-5">
-            <Skeleton className="h-[150px] w-[350px] rounded-xl bg-gray-100" />
-            <div className="space-y-2">
-                <Skeleton className="h-4 w-[350px] bg-gray-100" />
-                <Skeleton className="h-4 w-[200px] bg-gray-100" />
-            </div>
-            </div>
+        <div className="flex">
+          <Skeleton className="h-[150px] w-[120px] rounded-xl bg-gray-100 m-1" />
+          <div>
+            <Skeleton className="h-[100px] w-[300px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[10px] w-[100px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[30px] w-[250px] rounded-xl bg-gray-100 m-1" />
+          </div>
+        </div>
+
+        <div className="flex">
+          <Skeleton className="h-[150px] w-[120px] rounded-xl bg-gray-100 m-1" />
+          <div>
+            <Skeleton className="h-[100px] w-[300px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[10px] w-[100px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[30px] w-[250px] rounded-xl bg-gray-100 m-1" />
+          </div>
+        </div>
+
+        <div className="flex">
+          <Skeleton className="h-[150px] w-[120px] rounded-xl bg-gray-100 m-1" />
+          <div>
+            <Skeleton className="h-[100px] w-[300px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[10px] w-[100px] rounded-xl bg-gray-100 m-1" />
+            <Skeleton className="h-[30px] w-[250px] rounded-xl bg-gray-100 m-1" />
+          </div>
+        </div>
+      </div>
     </div>
     )
 }
