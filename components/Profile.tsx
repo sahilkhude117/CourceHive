@@ -4,11 +4,8 @@ import {
   BookOpen,
   ChevronRight,
   LogOut,
-  Bell,
   CreditCard,
-  Coins,
-  Shield,
-  Phone
+  Shield
 } from 'lucide-react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,6 +25,7 @@ import axios from 'axios';
 import { signOut, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { Auth } from './Auth';
+import { useTab } from '@/contexts/TabContext';
 
 interface UserInfo {
   name: string;
@@ -39,6 +37,7 @@ interface UserInfo {
 
 const StudentProfile = () => {
   const router = useRouter();
+  const {activeTab,setActiveTab} = useTab();
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const [loading, setLoading] = useState(true);
   const { data: session , status } = useSession();
@@ -90,7 +89,7 @@ const StudentProfile = () => {
         {/* Quick Stats */}
         <div className="grid gap-4 mt-6 ">
           <Card className=''>
-            <CardContent className="p-4 flex flex-col items-center">
+            <CardContent onClick={() => setActiveTab('mycources')} className="p-4 flex flex-col items-center cursor-pointer">
               <BookOpen className="h-6 w-6 text-primary mb-2" />
               <p className="text-lg font-bold">{loading ? 'Loading...' : userInfo?.purchases.length}</p>
               <p className="text-sm text-gray-500">Enrolled Courses</p>
