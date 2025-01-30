@@ -18,7 +18,7 @@ export const GET = async () => {
       email: true,
       purchases: {
         select: {
-          courseId: true
+          courseId: true,
         }
       }
     }
