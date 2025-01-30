@@ -12,17 +12,24 @@ export const GET = async (req: NextRequest, { params }: { params: { slug: string
       select: {
         id: true,
         title: true,
+        instructor : true,
         slug: true,
-        description: true,
-        instructor: true,
-        thumbnailUrl: true,
-        duration: true,
-        originalPrice: true,
-        price: true,
         telegramLink: true,
-        category: {
+        price: true,
+        originalPrice: true,
+        thumbnailUrl: true,
+        description: true,
+        modules: {
           select: {
-            name: true,
+            id: true,
+            title: true,
+            description: true,
+            lessons: {
+              select: {
+                id: true,
+                duration: true
+              }
+            }
           }
         }
       }
