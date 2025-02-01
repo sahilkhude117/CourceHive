@@ -8,7 +8,6 @@ import CourceDetailsPage from "@/components/CourceDetailsPage";
 import { TabProvider } from "@/contexts/TabContext";
 import { useSession } from "next-auth/react";
 import React from "react";
-import { Auth } from "@/components/Auth";
 
 export interface Course {
   id: string;
